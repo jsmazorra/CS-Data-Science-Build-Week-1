@@ -1,5 +1,8 @@
-class knn:
-    
+# Library imports
+import numpy as np
+
+class Knn:
+
     def __init__(self, n_neighbors):
         self.n_neighbors = n_neighbors
     
@@ -13,8 +16,7 @@ class knn:
         return euclidean_distance
 
 
-    # Test distance function
-
+    # Let's add some dummy data to test this function out.
     sample = [
     [2.7810836, 2.550537003, 0],
     [1.465489372, 2.362125076, 0],
@@ -32,16 +34,34 @@ class knn:
         distance = euclidean_distance(self=row0, row1=row0, row2=row)
         print(distance)
 
-'''
-Output should be: 
-0.0
-1.3290173915275787
-1.9494646655653247
-1.5591439385540549
-0.5356280721938492
-4.850940186986411
-2.592833759950511
-4.214227042632867
-6.522409988228337
-4.985585382449795
-'''
+    def fit(self, X_train, y_train):
+        # Function to fit models for training data.
+        self.X_train = X_train
+        self.y_train = y_train
+
+    def predictor(self, X):
+       # Predict x for knn.
+        predictor = []
+
+        # Main loop doing an iteration through the length of X.
+        for index in range(len(X)):
+            euclidian_distances = []
+
+            for row in self.X_train:
+                eucl_distance = self.euclidean_distance(row, X[index])
+                euclidian_distances.append(eucl_distance)
+
+            neighbors = np.array(euclidian_distances).argsort()[: self.n_neighbors]
+            count_neighbors = {}
+
+            for val in neighbors:
+                if self.y_train[val] in count_neighbors:
+                    count_neighbors[self.y_train[val]] += 1
+                else:
+                    count_neighbors[self.y_train[val]] = 1
+            
+            predictor.append(max(count_neighbors, key=count_neighbors.get))
+
+        return predictor
+    
+    
