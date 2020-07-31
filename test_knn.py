@@ -12,8 +12,8 @@ target = wine.target
 # In this test, I'll be comparing the performance of my knn algorithm with
 # sklearn's own K-Neighbors Classifier.
 
+# Split the data into training and testing sets.
 X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.3)
-
 
 # Sklearn-learn KNN Classifier
 # Instantiate model
@@ -52,3 +52,7 @@ print(f"Build's k_nearest_neighbors model accuracy: {accuracy_score(y_test, pred
 # y_pred
 y_pred = classifier.predictor([X_test[0]])
 print("y_pred", y_pred)
+
+# Neighbor index and euclidean distance
+neighbors = classifier.dis_neighbors(X_test[0])
+print("Neighbors and their corresponding euclidian distances", neighbors)
