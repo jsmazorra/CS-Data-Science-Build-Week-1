@@ -11,10 +11,13 @@ class Knn:
     - fit(X_train, y_train):
         Fits model to training data
     - predictor(X):
-        Returns predictions for X based on fitted model"""
+        Returns predictions for X based on fitted model
+    - dis_neighborss(x):
+        Returns list of nearest_neighbors + corresponding euclidian distance
+    """
     
     # Initialization of the algorithm.
-    def __init__(self, n_neighbors=10):
+    def __init__(self, n_neighbors=10): # Default neighbors to be returned.
         self.n_neighbors = n_neighbors
 
     # Going to first start by implementing an euclidean distance function.
@@ -81,14 +84,19 @@ class Knn:
         # Main loop doing an iteration through the length of X.
 
         for index in range(len(X)):
+            # Initialize euclidian_distances as empty list.
             euclidian_distances = []
 
             for row in self.X_train:
+                # For every row in X_train, find eucl_distance to X using
+                # euclidean_distance() and append to euclidian_distances list.
                 eucl_distance = self.euclidean_distance(row, X[index])
                 euclidian_distances.append(eucl_distance)
-
-            neighbors = \
-                np.array(euclidian_distances).argsort()[:self.n_neighbors]
+            
+            # Sort euclidian_distances in ascending order, and retain only k
+            # neighbors as specified in n_neighbors (n_neighbors = k).
+            neighbors = np.array(euclidian_distances).argsort()[:self.n_neighbors]
+            # Initialize dict to count class occurrences in y_train.
             count_neighbors = {}
 
             for val in neighbors:
@@ -101,3 +109,35 @@ class Knn:
                              key=count_neighbors.get))
 
         return predictor
+
+    def dis_neighbors(self, x):
+        """
+        Inputs: x : vector x
+        Output: dis_neighbors_values : returns a list containing nearest
+        neighbors and their corresponding Euclidean distances
+        to the vector x wrapped in tuples
+        """
+
+        # Initialize euclidian_distances as empty list.
+        euclidian_distances = []
+
+        # For every row in X_train, find eucl_distance to x
+        # using euclidean_distance() and append to euclidian_distances list.
+        for row in self.X_train:
+            eucl_distance = self.euclidean_distance(row, x)
+            euclidian_distances.append(eucl_distance)
+
+        # Sort euclidian_distances in ascending order, and retain only k
+        # neighbors as specified in n_neighbors (n_neighbors = k).
+        neighbors = np.array(euclidian_distances).argsort()[: self.n_neighbors]
+
+        # Initiate empty dis_neighborss_values list.
+        dis_neighbors_values = []
+
+        for index in range(len(neighbors)):
+            neighbor_index = neighbors[index]
+            e_distances = euclidian_distances[index]
+            dis_neighbors_values.append(
+                (neighbor_index, e_distances)
+            )
+        return dis_neighbors_values
